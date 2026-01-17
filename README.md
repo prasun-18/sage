@@ -21,3 +21,29 @@ function autoPlay() {
 
 // Start the loop
 autoPlay();
+
+
+
+(function automateDino() {
+    const JUMP_DISTANCE = 100;
+
+    setInterval(() => {
+        const runner = Runner.instance_;
+        if (!runner || !runner.horizon || runner.horizon.obstacles.length === 0) return;
+
+        const obstacle = runner.horizon.obstacles[0];
+
+        // Only jump if the obstacle is close and Dino is on the ground
+        if (obstacle.xPos < JUMP_DISTANCE && !runner.tRex.jumping) {
+            // Trigger jump
+            const keyDown = new KeyboardEvent('keydown', { keyCode: 32 });
+            document.dispatchEvent(keyDown);
+            
+            // Short delay then trigger landing (helps with fast obstacles)
+            setTimeout(() => {
+                const keyUp = new KeyboardEvent('keyup', { keyCode: 32 });
+                document.dispatchEvent(keyUp);
+            }, 100);
+        }
+    }, 10); // Checks every 10ms
+})();
