@@ -1,49 +1,50 @@
 # sage
 ## [Still working on it]
 
+import pyautogui # pip install pyautogui
+from PIL import Image, ImageGrab # pip install pillow
+# from numpy import asarray
+import time
 
-function autoPlay() {
-  const runner = Runner.instance_;
-  
-  // Check if runner and the horizon exist to avoid the TypeError
-  if (runner && runner.horizon && runner.horizon.obstacles.length > 0) {
-    const firstObstacle = runner.horizon.obstacles[0];
+def click(key):
+    pyautogui.keyDown(key)
+    return
+
+def isCollision(data):
+# Check colison for birds
+    for i in range(530,560):
+        for j in range(80, 127):
+            if data[i, j] < 171:
+                click("down")
+                return
+ # Check colison for cactus
+    for i in range(530, 620):
+        for j in range(130, 160):
+            if data[i, j] < 100:
+                click("up")
+                return
+    return
+
+if __name__ == "__main__":
+    time.sleep(5)
+    click('up') 
     
-    // Adjust the '75' value to change jump timing (lower = later jump)
-    if (firstObstacle.xPos < 75 && !runner.tRex.jumping) {
-        // Create a fake 'keydown' event for jumping
-        const jumpEvent = new KeyboardEvent('keydown', {keyCode: 32});
-        document.dispatchEvent(jumpEvent);
-    }
-  }
-  requestAnimationFrame(autoPlay);
-}
+    while True:
+        image = ImageGrab.grab().convert('L')  
+        data = image.load()
+        isCollision(data)
+        
+        # # Draw the rectangle for cactus
+        # for i in range(530, 610):
+        #     for j in range(130, 160):
+        #          data[i, j] = 0
+        
+        # # # Draw the rectangle for birds
+        # for i in range(530, 560):
+        #     for j in range(100, 125):
+        #         data[i, j] = 171
 
-// Start the loop
-autoPlay();
-
-
-
-(function automateDino() {
-    const JUMP_DISTANCE = 100;
-
-    setInterval(() => {
-        const runner = Runner.instance_;
-        if (!runner || !runner.horizon || runner.horizon.obstacles.length === 0) return;
-
-        const obstacle = runner.horizon.obstacles[0];
-
-        // Only jump if the obstacle is close and Dino is on the ground
-        if (obstacle.xPos < JUMP_DISTANCE && !runner.tRex.jumping) {
-            // Trigger jump
-            const keyDown = new KeyboardEvent('keydown', { keyCode: 32 });
-            document.dispatchEvent(keyDown);
-            
-            // Short delay then trigger landing (helps with fast obstacles)
-            setTimeout(() => {
-                const keyUp = new KeyboardEvent('keyup', { keyCode: 32 });
-                document.dispatchEvent(keyUp);
-            }, 100);
-        }
-    }, 10); // Checks every 10ms
-})();
+        # image.show()
+        # break
+      
+© 2020 GitHub, Inc.
